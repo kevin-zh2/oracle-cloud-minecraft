@@ -1,0 +1,1 @@
+Projeto Terraform que provisiona, na Oracle Cloud (OCI), tudo o que é necessário para hospedar um servidor Minecraft Java Edition vanilla com acesso público. A VM usa o shape Arm VM.Standard.A1.Flex, que faz parte do nível Always Free da Oracle.

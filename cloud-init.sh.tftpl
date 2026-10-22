@@ -8,7 +8,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
 apt-get install -y openjdk-21-jre-headless jq curl
 
-# ---------- Firewall do SO (imagens Ubuntu da OCI bloqueiam via iptables) ----------
+# ---------- Firewall do SO ----------
 iptables -I INPUT 1 -p tcp --dport 25565 -j ACCEPT
 if command -v netfilter-persistent >/dev/null 2>&1; then
   netfilter-persistent save
@@ -22,7 +22,7 @@ id minecraft >/dev/null 2>&1 || useradd -r -m -d /opt/minecraft -s /bin/bash min
 mkdir -p /opt/minecraft/server
 cd /opt/minecraft/server
 
-# ---------- Download do server.jar oficial (Mojang) ----------
+# ---------- Download do server.jar ----------
 MANIFEST="https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"
 VERSION="${mc_version}"
 if [ "$VERSION" = "latest" ]; then

@@ -5,35 +5,35 @@ variable "oci_profile" {
 }
 
 variable "region" {
-  description = "Região home da sua conta (ex: sa-saopaulo-1, us-ashburn-1). Always Free só vale na região home."
+  description = "Região ."
   type        = string
 }
 
 variable "compartment_ocid" {
-  description = "OCID do compartimento. Para usar o root, informe o OCID do tenancy."
+  description = "OCID do compartimento."
   type        = string
 }
 
 variable "availability_domain_index" {
-  description = "Índice do Availability Domain (0, 1, 2). Troque se der 'Out of host capacity'."
+  description = "Índice do Availability Domain."
   type        = number
   default     = 0
 }
 
 variable "ssh_public_key_path" {
-  description = "Caminho da sua chave pública SSH"
+  description = "Caminho da chave pública SSH"
   type        = string
   default     = "~/.ssh/id_rsa.pub"
 }
 
 variable "ssh_allowed_cidr" {
-  description = "CIDR com permissão de SSH. Ideal: seu IP, ex: 200.100.50.25/32"
+  description = "CIDR com permissão de SSH."
   type        = string
   default     = "0.0.0.0/0"
 }
 
 variable "accept_eula" {
-  description = "Você precisa aceitar o EULA da Mojang: https://aka.ms/MinecraftEULA"
+  description = "Aceitar o EULA da Mojang."
   type        = bool
 
   validation {
@@ -44,26 +44,26 @@ variable "accept_eula" {
 
 # ---------- VM ----------
 variable "instance_ocpus" {
-  description = "OCPUs da VM Arm (Always Free: até 4 no total, confira o limite atual da Oracle)"
+  description = "OCPUs da VM Arm."
   type        = number
   default     = 2
 }
 
 variable "instance_memory_gb" {
-  description = "RAM da VM em GB (Always Free: até 24 no total, confira o limite atual da Oracle)"
+  description = "RAM da VM em GB."
   type        = number
   default     = 12
 }
 
 variable "boot_volume_gb" {
-  description = "Tamanho do disco de boot em GB (Always Free: 200 GB no total)"
+  description = "Tamanho do disco de boot em GB."
   type        = number
   default     = 50
 }
 
 # ---------- Minecraft ----------
 variable "minecraft_version" {
-  description = "Versão vanilla (ex: 1.21.4) ou 'latest' para a última release"
+  description = "Versão do Minecraft."
   type        = string
   default     = "latest"
 }
@@ -90,7 +90,7 @@ variable "view_distance" {
 }
 
 variable "whitelist_enabled" {
-  description = "Se true, só jogadores na whitelist entram (gerencie com /whitelist add)"
+  description = "Se ativado, só jogadores na whitelist entram no servidor."
   type        = bool
   default     = false
 }

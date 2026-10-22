@@ -1,11 +1,11 @@
 locals {
-  # Deixa ~2 GB para o sistema operacional
   java_heap_gb = max(1, var.instance_memory_gb - 2)
 }
 
 # ---------------------------------------------------------------
 # Dados: Availability Domain e imagem Ubuntu 24.04 (Arm)
 # ---------------------------------------------------------------
+
 data "oci_identity_availability_domains" "ads" {
   compartment_id = var.compartment_ocid
 }
@@ -69,7 +69,7 @@ resource "oci_core_security_list" "mc" {
     }
   }
 
-  # Minecraft Java Edition
+  # Minecraft
   ingress_security_rules {
     protocol = "6" # TCP
     source   = "0.0.0.0/0"
@@ -132,6 +132,6 @@ resource "oci_core_instance" "mc" {
   }
 
   lifecycle {
-    ignore_changes = [source_details[0].source_id] # evita recriar a VM quando sair imagem nova
+    ignore_changes = [source_details[0].source_id]
   }
 }

@@ -9,8 +9,6 @@ terraform {
   }
 }
 
-# Usa as credenciais de ~/.oci/config (criadas com `oci setup config`
-# ou copiadas do console da Oracle ao gerar uma API key).
 provider "oci" {
   auth                = "ApiKey"
   config_file_profile = var.oci_profile

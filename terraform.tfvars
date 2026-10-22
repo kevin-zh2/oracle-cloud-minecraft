@@ -1,4 +1,3 @@
-# Copie para terraform.tfvars e preencha
 region           = "sa-saopaulo-1"
 compartment_ocid = "ocid1.tenancy.oc1..abcdefg"
 

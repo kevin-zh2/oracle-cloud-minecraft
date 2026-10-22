@@ -1,0 +1,72 @@
+#!/bin/bash
+set -euxo pipefail
+exec > >(tee /var/log/minecraft-setup.log) 2>&1
+
+export DEBIAN_FRONTEND=noninteractive
+
+# ---------- Pacotes ----------
+apt-get update -y
+apt-get install -y openjdk-21-jre-headless jq curl
+
+# ---------- Firewall do SO (imagens Ubuntu da OCI bloqueiam via iptables) ----------
+iptables -I INPUT 1 -p tcp --dport 25565 -j ACCEPT
+if command -v netfilter-persistent >/dev/null 2>&1; then
+  netfilter-persistent save
+else
+  apt-get install -y iptables-persistent
+  netfilter-persistent save
+fi
+
+# ---------- Usuário e diretórios ----------
+id minecraft >/dev/null 2>&1 || useradd -r -m -d /opt/minecraft -s /bin/bash minecraft
+mkdir -p /opt/minecraft/server
+cd /opt/minecraft/server
+
+# ---------- Download do server.jar oficial (Mojang) ----------
+MANIFEST="https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"
+VERSION="${mc_version}"
+if [ "$VERSION" = "latest" ]; then
+  VERSION=$(curl -fsSL "$MANIFEST" | jq -r '.latest.release')
+fi
+VERSION_URL=$(curl -fsSL "$MANIFEST" | jq -r --arg v "$VERSION" '.versions[] | select(.id==$v) | .url')
+JAR_URL=$(curl -fsSL "$VERSION_URL" | jq -r '.downloads.server.url')
+curl -fsSL -o server.jar "$JAR_URL"
+echo "Minecraft $VERSION" > installed_version.txt
+
+# ---------- Configuração ----------
+echo "eula=true" > eula.txt
+
+cat > server.properties <<PROPS
+motd=${motd}
+max-players=${max_players}
+difficulty=${difficulty}
+view-distance=${view_distance}
+white-list=${whitelist}
+enforce-whitelist=${whitelist}
+server-port=25565
+online-mode=true
+PROPS
+
+chown -R minecraft:minecraft /opt/minecraft
+
+# ---------- Serviço systemd ----------
+cat > /etc/systemd/system/minecraft.service <<UNIT
+[Unit]
+Description=Minecraft Vanilla Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=minecraft
+WorkingDirectory=/opt/minecraft/server
+ExecStart=/usr/bin/java -Xms${heap_gb}G -Xmx${heap_gb}G -jar server.jar nogui
+Restart=on-failure
+RestartSec=10
+SuccessExitStatus=0 143
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+
+systemctl daemon-reload
+systemctl enable --now minecraft.service
